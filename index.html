@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刘番茄的个人主页</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #fff; min-height: 100vh; overflow-x: hidden; background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%); background-attachment: fixed; }
+        .bg-particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; }
+        .particle { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.4); animation: float linear infinite; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        @keyframes float { 0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; } 20% { opacity: 0.6; } 80% { opacity: 0.6; } 100% { transform: translateY(-10vh) translateX(var(--dx)) scale(1); opacity: 0; } }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 60px; position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(255,255,255,0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        nav .logo { font-size: 1.6rem; font-weight: 900; background: linear-gradient(135deg, #ff6b6b, #ffa07a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
+        nav ul { list-style: none; display: flex; gap: 32px; }
+        nav a { color: #555; text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s, transform 0.3s; position: relative; }
+        nav a:hover { color: #ff6b6b; transform: translateY(-2px); }
+        nav a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: #ff6b6b; transition: width 0.3s; }
+        nav a:hover::after { width: 100%; }
+        .hero { display: flex; flex-direction: row; align-items: center; justify-content: center; min-height: 90vh; padding: 120px 60px 60px; gap: 60px; position: relative; }
+        .hero-image { flex-shrink: 0; max-width: 380px; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.15); border: 3px solid rgba(255,255,255,0.6); transition: transform 0.5s, box-shadow 0.5s; }
+        .hero-image:hover { transform: scale(1.02) rotate(1deg); box-shadow: 0 25px 60px rgba(0,0,0,0.2); }
+        .hero-image img { width: 100%; height: auto; display: block; object-fit: cover; }
+        .hero-info { flex: 1; max-width: 600px; }
+        .hero-info .greeting { font-size: 1rem; color: #ff6b6b; font-weight: 700; margin-bottom: 8px; letter-spacing: 3px; }
+        .hero-info h1 { font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; background: linear-gradient(to right, #ff6b6b, #ffa07a, #ffd700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 3s ease-in-out infinite alternate; }
+        @keyframes shimmer { from { filter: brightness(1); } to { filter: brightness(1.1); } }
+        .hero-info .tagline { font-size: 1.15rem; color: #444; line-height: 1.9; margin-bottom: 24px; font-weight: 300; }
+        .hero-info .tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; }
+        .hero-info .tag { padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.3); color: #333; cursor: default; transition: all 0.3s; }
+        .hero-info .tag:hover { background: #ff6b6b; color: #fff; border-color: #ff6b6b; transform: scale(1.05); }
+        .hero-info .btn-group { display: flex; gap: 14px; flex-wrap: wrap; }
+        .hero-info .btn { padding: 13px 32px; border: none; border-radius: 30px; font-size: 0.95rem; cursor: pointer; text-decoration: none; transition: all 0.3s; font-weight: 600; }
+        .hero-info .btn-primary { background: linear-gradient(135deg, #ff6b6b, #ff8c42); color: #fff; box-shadow: 0 5px 15px rgba(255,107,107,0.3); }
+        .hero-info .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(255,107,107,0.4); }
+        .hero-info .btn-outline { background: rgba(255,255,255,0.8); color: #333; border: 2px solid rgba(255,255,255,0.3); }
+        .hero-info .btn-outline:hover { background: #ff6b6b; color: #fff; border-color: #ff6b6b; transform: translateY(-3px); }
+        .section { padding: 100px 60px; position: relative; }
+        .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 16px; color: #333; background: linear-gradient(135deg, #ff6b6b, #ffa07a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
+        .section-sub { text-align: center; color: #666; margin-bottom: 60px; font-size: 1.1rem; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; max-width: 1200px; margin: 0 auto; }
+        .card { background: rgba(255,255,255,0.9); border-radius: 20px; padding: 36px 30px; border: 2px solid rgba(255,255,255,0.3); transition: all 0.4s ease; box-shadow: 0 8px 25px rgba(0,0,0,0.05); position: relative; overflow: hidden; }
+        .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #ff6b6b, #ffa07a, #ffd700); opacity: 0; transition: opacity 0.4s; }
+        .card:hover::before { opacity: 1; }
+        .card:hover { transform: translateY(-12px); border-color: rgba(255,107,107,0.4); box-shadow: 0 20px 60px rgba(255,107,107,0.15); }
+        .card .icon { font-size: 2.8rem; margin-bottom: 18px; display: block; }
+        .card h3 { margin-bottom: 12px; color: #222; font-size: 1.3rem; font-weight: 600; }
+        .card p { color: #555; line-height: 1.7; font-size: 0.95rem; }
+        .card .card-tag { display: inline-block; margin-top: 14px; padding: 5px 16px; border-radius: 15px; font-size: 0.75rem; font-weight: 600; background: rgba(255,107,107,0.1); color: #ff6b6b; }
+        .game-section { background: rgba(255,255,255,0.6); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .game-card { border-color: rgba(0,212,255,0.3); }
+        .game-card .card-tag { background: rgba(0,212,255,0.15); color: #00d4ff; }
+        .game-card .level-badge { display: inline-block; margin-top: 8px; padding: 3px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; background: rgba(0,212,255,0.1); color: #00d4ff; }
+        .badge-pro { background: rgba(255,215,0,0.2); color: #ffd700; }
+        .badge-high { background: rgba(0,212,255,0.2); color: #00d4ff; }
+        .badge-main { background: rgba(123,47,247,0.2); color: #b388ff; }
+        .music-card { border-color: rgba(123,47,247,0.3); }
+        .music-card .card-tag { background: rgba(123,47,247,0.15); color: #b388ff; }
+        .music-card .card-tag span { margin-left: 6px; color: #b388ff; font-weight: 600; }
+        .art-card { border-color: rgba(255,215,0,0.3); }
+        .art-card .card-tag { background: rgba(255,215,0,0.15); color: #ffd700; }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; max-width: 1200px; margin: 0 auto; }
+        .gallery-item { border-radius: 16px; overflow: hidden; aspect-ratio: 1; background: rgba(255,255,255,0.7); border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 3rem; transition: all 0.4s ease; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .gallery-item:hover { transform: scale(1.08) rotate(2deg); border-color: #ffd700; box-shadow: 0 15px 40px rgba(255,215,0,0.25); }
+        .contact { text-align: center; background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .contact .social-links { display: flex; justify-content: center; gap: 30px; margin-top: 30px; flex-wrap: wrap; }
+        .contact-card { background: rgba(255,255,255,0.95); border-radius: 16px; padding: 20px 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); transition: transform 0.3s; }
+        .contact-card:hover { transform: translateY(-5px); }
+        .contact-card .icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
+        .contact-card .detail { color: #333; font-weight: 500; font-size: 1.05rem; }
+        .contact-card .label { color: #888; font-size: 0.85rem; margin-top: 4px; }
+        footer { text-align: center; padding: 40px 20px; color: #666; font-size: 0.9rem; border-top: 1px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.5); }
+        .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s, transform 0.8s; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+        @media (max-width: 768px) { nav { padding: 15px 20px; } nav ul { gap: 14px; } .hero { flex-direction: column; text-align: center; padding: 100px 20px 40px; gap: 30px; } .hero-image { max-width: 280px; } .hero-info h1 { font-size: 2.5rem; } .hero-info .tagline { font-size: 1rem; } .section { padding: 60px 20px; } .section-title { font-size: 1.8rem; } .cards { grid-template-columns: 1fr; } .hero-info .btn-group { justify-content: center; } }
+        .game-scroll-container { overflow: hidden; background: rgba(255,255,255,0.15); border-radius: 12px; padding: 20px; margin-bottom: 30px; position: relative; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); }
+        .game-scroll-track { display: flex; align-items: center; white-space: nowrap; animation: scrollLeft 25s linear infinite; }
+        .game-scroll-item { display: inline-block; margin: 0 30px; font-size: 1.8rem; font-weight: 900; color: #ff6b6b; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); padding: 10px 20px; background: rgba(255,255,255,0.15); border-radius: 12px; border: 2px solid rgba(255,255,255,0.3); transition: all 0.3s; }
+        .game-scroll-item:hover { transform: scale(1.15); background: rgba(255,255,255,0.3); border-color: #ff6b6b; color: #fff; text-shadow: 0 0 10px rgba(255,107,107,0.5); z-index: 10; box-shadow: 0 5px 20px rgba(255,107,107,0.3); }
+        @keyframes scrollLeft { 0% { transform: translateX(100%); } 100% { transform: translateX(calc(-100% - 200vw)); } }
+    </style>
+</head>
+<body>
+    <div class="bg-particles" id="bgParticles"></div>
+
+    <nav>
+        <div class="logo">🍅 刘番茄</div>
+        <ul>
+            <li><a href="#about">关于我</a></li>
+            <li><a href="#games">游戏</a></li>
+            <li><a href="#hobbies">爱好</a></li>
+            <li><a href="#gallery">创作</a></li>
+            <li><a href="#contact">联系</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-image">
+            <img src="C:/Users/Administrator/AppData/Local/Temp/codex-clipboard-73195934-a618-4d9f-8a79-4a691b907fb2.jpg" alt="刘番茄的个人照片">
+        </div>
+        <div class="hero-info">
+            <p class="greeting">👋 HELLO WORLD</p>
+            <h1>刘番茄</h1>
+            <p class="tagline">硬核射击玩家 · 深度影迷 · 音乐爱好者 · AIGC创作者<br>在虚拟战场征战，在光影中感受故事，用音乐表达情感，用AI描绘未来</p>
+            <div class="tags">
+                <span class="tag">APEX英雄</span>
+                <span class="tag">三角洲行动</span>
+                <span class="tag">CS2</span>
+                <span class="tag">电影</span>
+                <span class="tag">韩剧</span>
+                <span class="tag">篮球</span>
+                <span class="tag">健身</span>
+                <span class="tag">美食</span>
+                <span class="tag">听歌</span>
+                <span class="tag">AI编程</span>
+                <span class="tag">AIGC</span>
+            </div>
+            <div class="btn-group">
+                <a href="#games" class="btn btn-primary">看看我的游戏</a>
+                <a href="#contact" class="btn btn-outline">联系我</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section fade-in">
+        <h2 class="section-title">关于我</h2>
+        <p class="section-sub">一个热爱生活、热爱技术的多元创作者</p>
+        <div class="cards">
+            <div class="card"><div class="icon">🎮</div><h3>硬核游戏玩家</h3><p>热衷于射击类游戏，在 APEX 和三角洲行动中磨练战术与枪法。享受与队友配合、逆风翻盘的快感。</p><span class="card-tag">FPS / 战术竞技</span></div>
+            <div class="card"><div class="icon">🎬</div><h3>深度影迷</h3><p>从科幻到悬疑，从韩剧到文艺大片，每一部好剧都是一次沉浸式的旅程。喜欢分析镜头语言与叙事结构。</p><span class="card-tag">影视鉴赏</span></div>
+            <div class="card"><div class="icon">🎤</div><h3>热爱唱歌</h3><p>音乐是生活中不可或缺的一部分。无论是流行、摇滚还是民谣，都用歌声表达内心的情感。</p><span class="card-tag">声乐 / 创作</span></div>
+            <div class="card"><div class="icon">🏃</div><h3>健身运动</h3><p>坚持篮球训练与日常健身，享受汗水挥洒的感觉。运动不仅是健康，更是精神的磨练。</p><span class="card-tag">篮球 / 健身</span></div>
+            <div class="card"><div class="icon">👨‍🍳</div><h3>美食制作</h3><p>热爱烹饪，在厨房中创造美味佳肴。从家常菜到创意料理，享受食物带来的幸福感。</p><span class="card-tag">厨艺 / 美食</span></div>
+            <div class="card"><div class="icon">🎧</div><h3>听歌</h3><p>喜欢听各种风格的音乐，尤其是《我不难过》、《你瞒我瞒》、《我的宣言》、《抛物线》、《续集》等歌曲，用旋律抚慰心灵。</p><span class="card-tag">🎵 音乐爱好者</span></div>
+            <div class="card"><div class="icon">💻</div><h3>AIGC编程AI</h3><p>在人工智能、AIGC、深度学习领域颇有造诣。掌握生成式AI技术，用代码创造智能应用。</p><span class="card-tag">AI / 编程 / AIGC</span></div>
+        </div>
+    </section>
+
+    <section id="games" class="section game-section fade-in">
+        <h2 class="section-title">游戏专区</h2>
+        <p class="section-sub">我的主战场 —— 沉浸式游戏体验</p>
+        <div class="game-scroll-container"><div class="game-scroll-track">
+            <div class="game-scroll-item">APEX英雄</div>
+            <div class="game-scroll-item">三角洲行动</div>
+            <div class="game-scroll-item">CS2</div>
+            <div class="game-scroll-item">无畏契约</div>
+            <div class="game-scroll-item">使命召唤手游</div>
+            <div class="game-scroll-item">绝地求生</div>
+            <div class="game-scroll-item">守望先锋2</div>
+            <div class="game-scroll-item">原神</div>
+            <div class="game-scroll-item">永劫无间</div>
+            <div class="game-scroll-item">逆战</div>
+            <div class="game-scroll-item">暗区突围</div>
+            <div class="game-scroll-item">逃离塔科夫</div>
+            <div class="game-scroll-item">APEX英雄</div>
+            <div class="game-scroll-item">三角洲行动</div>
+            <div class="game-scroll-item">CS2</div>
+            <div class="game-scroll-item">无畏契约</div>
+        </div></div>
+        <div class="cards">
+            <div class="card game-card"><div class="icon">🔫</div><h3>APEX 英雄</h3><p>快节奏战术射击。熟练掌握地图机制、角色技能搭配与团队协同，追求排名巅峰与高光时刻。</p><span class="card-tag badge-pro">⭐ 主要游戏</span></div>
+            <div class="card game-card"><div class="icon">⚔️</div><h3>三角洲行动</h3><p>拟真军事战术。注重团队配合与战术规划，在紧张的对战中体验真实的军事行动氛围。</p><span class="card-tag badge-pro">⭐ 主要游戏</span></div>
+            <div class="card game-card"><div class="icon">💣</div><h3>CS2</h3><p>经典竞技射击。精准的枪法对抗与战术博弈，在每一局中追求极致的反应与判断。</p><span class="card-tag badge-high">🔥 高玩</span></div>
+            <div class="card game-card"><div class="icon">🎯</div><h3>无畏契约（Valorant）</h3><p>技能 + 枪法的双重考验。独特角色技能组合配合精准枪法，征服每一张地图。</p><span class="card-tag badge-high">🔥 高玩</span></div>
+            <div class="card game-card"><div class="icon">🪖</div><h3>使命召唤手游</h3><p>移动端 FPS 精品。随时随地体验经典 COD 手感，快速匹配，爽快感十足。</p><span class="card-tag badge-main">🎮 休闲</span></div>
+            <div class="card game-card"><div class="icon">🏝️</div><h3>绝地求生 PUBG</h3><p>大逃杀鼻祖。百人跳伞，物资搜集，最后 Survive 的刺激体验永远难忘。</p><span class="card-tag badge-main">🎮 休闲</span></div>
+            <div class="card game-card"><div class="icon">🚀</div><h3>守望先锋 2</h3><p>团队英雄的极致配合。不同英雄切换，找到最适合的队伍角色，打出完美团战。</p><span class="card-tag badge-high">🔥 高玩</span></div>
+            <div class="card game-card"><div class="icon">🌍</div><h3>原神</h3><p>开放世界 RPG 的休闲时光。探索提瓦特大陆，收集角色，感受精彩剧情与精美画面。</p><span class="card-tag badge-main">🎮 休闲</span></div>
+            <div class="card game-card"><div class="icon">💥</div><h3>永劫无间</h3><p>东方武侠吃鸡。冷兵器对抗的酣畅淋漓，振刀博弈与空中对决的独特体验。</p><span class="card-tag badge-high">🔥 高玩</span></div>
+            <div class="card game-card"><div class="icon">🛡️</div><h3>逆战</h3><p>经典国产网游。PVE 模式下的合作冒险，PVP 模式中的热血对抗。</p><span class="card-tag badge-main">🎮 怀旧</span></div>
+            <div class="card game-card"><div class="icon">🔥</div><h3>暗区突围</h3><p>硬核撤离类射击。搜刮、生存、撤离，每一步都充满紧张感与策略性。</p><span class="card-tag badge-high">🔥 高玩</span></div>
+            <div class="card game-card"><div class="icon">🌌</div><h3>逃离塔科夫</h3><p>拟真射击天花板。极高难度带来的强烈成就感，每一次出队都是赌上全部的行动。</p><span class="card-tag badge-pro">⭐ 主要游戏</span></div>
+        </div>
+    </section>
+
+    <section id="hobbies" class="section fade-in">
+        <h2 class="section-title">我的爱好</h2>
+        <p class="section-sub">生活的美好，藏在每一个热爱的瞬间</p>
+        <div class="cards">
+            <div class="card music-card"><div class="icon">🎬</div><h3>看电影韩剧</h3><p>从科幻悬疑到韩剧爱情，每一部好剧都是一次心灵的旅程。喜欢追剧时的沉浸感，爱在周末窝在沙发里看一整天。</p><span class="card-tag">🎬 影视 <span>常更新</span></span></div>
+            <div class="card music-card"><div class="icon">🏀</div><h3>打篮球</h3><p>周末约上三五好友，在球场上挥洒汗水。三分线外的跳投、突破上篮的快乐，是运动带来的纯粹享受。</p><span class="card-tag">🏀 周末球场</span></div>
+            <div class="card music-card"><div class="icon">🏋️</div><h3>健身运动</h3><p>坚持规律训练，从力量训练到有氧运动。汗水是成长的见证，强健的体魄是生活的底气。</p><span class="card-tag">💪 每日坚持</span></div>
+            <div class="card music-card"><div class="icon">🎧</div><h3>听歌</h3><p>音乐是生活的陪伴，从抒情到摇滚，用旋律抚慰心灵。特别钟爱陈奕迅的《我不难过》、《你瞒我瞒》、《我的宣言》、《抛物线》、《续集》等歌曲。</p><span class="card-tag">🎵 音乐 <span>陈奕迅粉</span></span></div>
+            <div class="card art-card"><div class="icon">🎨</div><h3>AIGC创作</h3><p>在人工智能、AIGC、深度学习领域颇有造诣。用生成式AI创作内容，探索技术与艺术的边界。</p><span class="card-tag">✨ 技术前沿</span></div>
+            <div class="card art-card"><div class="icon">💻</div><h3>编程</h3><p>热爱编程带来的创造感。从网页设计到算法实现，代码是表达想法的最优雅语言。</p><span class="card-tag">🚀 技术驱动</span></div>
+            <div class="card art-card"><div class="icon">👨‍🍳</div><h3>制作美食</h3><p>在厨房创造美味。从家常菜到创意料理，食材在手中变成佳肴的过程令人着迷。</p><span class="card-tag">🍳 生活美学</span></div>
+        </div>
+    </section>
+
+    <section id="gallery" class="section fade-in" style="background:rgba(255,255,255,0.3);">
+        <h2 class="section-title">作品展示</h2>
+        <p class="section-sub">我的图片创作与AIGC设计作品集</p>
+        <div class="gallery">
+            <div class="gallery-item" title="AIGC生成">🤖</div>
+            <div class="gallery-item" title="编程作品">💻</div>
+            <div class="gallery-item" title="摄影作品">📷</div>
+            <div class="gallery-item" title="设计作品">🎨</div>
+            <div class="gallery-item" title="音乐作品">🎵</div>
+            <div class="gallery-item" title="美食作品">🍳</div>
+            <div class="gallery-item" title="电影赏析">🎬</div>
+            <div class="gallery-item" title="游戏高光">🎮</div>
+        </div>
+        <p style="text-align:center;color:#666;margin-top:30px;font-size:0.95rem;">更多作品持续更新中... AIGC创作领域持续探索</p>
+    </section>
+
+    <section id="contact" class="section contact fade-in">
+        <h2 class="section-title">联系我</h2>
+        <p class="section-sub" style="margin-bottom:20px; font-size: 1.1rem;">想一起组队游戏、聊电影、约KTV或探讨技术？随时找我！</p>
+        <div class="social-links">
+            <div class="contact-card"><span class="icon">💬</span><div class="detail">2517055317</div><div class="label">QQ 号码</div></div>
+            <div class="contact-card"><span class="icon">📱</span><div class="detail">17825315998</div><div class="label">微信 号码</div></div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 刘番茄的个人主页. Made with ❤️ | AIGC & 游戏爱好者</p>
+    </footer>
+
+    <script>
+        const particlesContainer = document.getElementById('bgParticles');
+        const colors = ['#e0f7fa', '#b2ebf2', '#80deea', '#4dd0e1', '#26c6da'];
+        for(let i=0;i<40;i++){
+            const p=document.createElement('div');p.className='particle';
+            const size=Math.random()*10+5,color=colors[Math.floor(Math.random()*colors.length)];
+            const duration=Math.random()*20+15,xDir=(Math.random()-0.5)*200;
+            p.style.width=size+'px';p.style.height=size+'px';p.style.background=color;p.style.left=Math.random()*100+'%';p.style.setProperty('--dx',xDir+'px');p.style.animationDuration=duration+'s';p.style.animationDelay=(Math.random()*10)+'s';particlesContainer.appendChild(p);
+        }
+        function handleScroll(){
+            document.querySelectorAll('.fade-in').forEach(e=>{const r=e.getBoundingClientRect();if(r.top<window.innerHeight-100)e.classList.add('visible')});
+        }
+        window.addEventListener('scroll',handleScroll);
+        window.addEventListener('load',handleScroll);
+        document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})}));
+    </script>
+</body>
+</html>
