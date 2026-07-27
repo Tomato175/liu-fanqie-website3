@@ -27,17 +27,20 @@
         .hero-info h1 { font-size: 4rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; background: linear-gradient(to right, #ff6b6b, #ffa07a, #ffd700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 3s ease-in-out infinite alternate; }
         @keyframes shimmer { from { filter: brightness(1); } to { filter: brightness(1.1); } }
         .hero-info .tagline { font-size: 1.15rem; color: #444; line-height: 1.9; margin-bottom: 24px; font-weight: 300; }
+        .hero-info .motto { font-size: 1.2rem; color: #ff6b6b; font-style: italic; margin: 20px 0; padding: 15px; background: rgba(255,255,255,0.2); border-radius: 10px; border-left: 4px solid #ff6b6b; }
         .hero-info .tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; }
         .hero-info .tag { padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.3); color: #333; cursor: default; transition: all 0.3s; }
         .hero-info .tag:hover { background: #ff6b6b; color: #fff; border-color: #ff6b6b; transform: scale(1.05); }
         .section { padding: 80px 60px; }
         .section-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; color: #333; text-align: center; }
         .section-sub { text-align: center; color: #666; margin-bottom: 40px; font-size: 1.1rem; }
-        .games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-        .game-card { background: rgba(255,255,255,0.9); border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s; }
+        .games-container { overflow-x: auto; white-space: nowrap; padding: 20px 0; margin: 0 auto; max-width: 1200px; }
+        .games-grid { display: inline-flex; gap: 20px; padding: 0 20px; }
+        .game-card { background: rgba(255,255,255,0.9); border-radius: 15px; padding: 20px; min-width: 200px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s; display: inline-block; }
         .game-card:hover { transform: translateY(-5px); }
         .game-icon { font-size: 3rem; margin-bottom: 10px; }
-        .game-name { font-weight: 600; color: #333; }
+        .game-name { font-weight: 600; color: #333; margin-bottom: 8px; }
+        .game-desc { font-size: 0.9rem; color: #666; line-height: 1.4; }
         .hobbies-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
         .hobby-card { background: rgba(255,255,255,0.9); border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s; }
         .hobby-card:hover { transform: translateY(-5px); }
@@ -80,7 +83,8 @@
         <div class="hero-info">
             <div class="greeting">你好，我是</div>
             <h1>刘番茄</h1>
-            <div class="tagline">APEX 高手 · 三角洲行动玩家 · 电影爱好者 · 音乐制作人</div>
+            <div class="motto">人生的容错率大到你无法想象。不要因为一次的错误反复责怪自己，不要因为一个不理想的结果就停滞不前。-----Tomato！</div>
+            <div class="tagline">APEX 高手 · 三角洲行动玩家 · 电影爱好者</div>
             <div class="tags"><span class="tag">APEX</span><span class="tag">三角洲行动</span><span class="tag">电影</span><span class="tag">唱歌</span><span class="tag">AIGC</span><span class="tag">编程</span></div>
             <div class="btn-group"><a href="#games" class="btn btn-primary">查看游戏</a><a href="#contact" class="btn btn-outline">联系我</a></div>
         </div>
@@ -88,15 +92,17 @@
     <section id="games" class="section fade-in" style="background: rgba(255,255,255,0.2);">
         <h2 class="section-title">🎮 游戏</h2>
         <p class="section-sub">我最爱玩的射击和竞技游戏</p>
-        <div class="games-grid">
-            <div class="game-card"><div class="game-icon">🔫</div><div class="game-name">APEX 英雄</div></div>
-            <div class="game-card"><div class="game-icon">💣</div><div class="game-name">三角洲行动</div></div>
-            <div class="game-card"><div class="game-icon">⚔️</div><div class="game-name">王者荣耀</div></div>
-            <div class="game-card"><div class="game-icon">🪙</div><div class="game-name">金铲铲之战</div></div>
-            <div class="game-card"><div class="game-icon">🎯</div><div class="game-name">英雄联盟</div></div>
-            <div class="game-card"><div class="game-icon">🔪</div><div class="game-name">Valorant</div></div>
-            <div class="game-card"><div class="game-icon">🔫</div><div class="game-name">穿越火线</div></div>
-            <div class="game-card"><div class="game-icon">🎮</div><div class="game-name">Steam 3A大作</div></div>
+        <div class="games-container">
+            <div class="games-grid">
+                <div class="game-card"><div class="game-icon">🔫</div><div class="game-name">APEX 英雄</div><div class="game-desc">战术射击，团队配合，极速枪战体验，化身传奇杀手</div></div>
+                <div class="game-card"><div class="game-icon">💣</div><div class="game-name">三角洲行动</div><div class="game-desc">现代军事战术，潜行暗杀，刺激战场，专业特工</div></div>
+                <div class="game-card"><div class="game-icon">⚔️</div><div class="game-name">王者荣耀</div><div class="game-desc">MOBA 手游，5v5 团战，策略配合，峡谷王者</div></div>
+                <div class="game-card"><div class="game-icon">🪙</div><div class="game-name">金铲铲之战</div><div class="game-desc">自走棋策略，阵容搭配，吃鸡登顶</div></div>
+                <div class="game-card"><div class="game-icon">🎯</div><div class="game-name">英雄联盟</div><div class="game-desc">LOL 竞技，职业电竞，团队协作，推塔制胜</div></div>
+                <div class="game-card"><div class="game-icon">🔪</div><div class="game-name">Valorant</div><div class="game-desc">战术 FPS，技能枪法，精准射击，全球竞技</div></div>
+                <div class="game-card"><div class="game-icon">🔫</div><div class="game-name">穿越火线</div><div class="game-desc">经典 FPS，生化模式，团队竞技，枪王之路</div></div>
+                <div class="game-card"><div class="game-icon">🎮</div><div class="game-name">Steam 3A大作</div><div class="game-desc">单机盛宴，开放世界，沉浸式剧情体验</div></div>
+            </div>
         </div>
     </section>
     <section id="hobbies" class="section fade-in" style="background: rgba(255,255,255,0.2);">
@@ -109,6 +115,7 @@
             <div class="hobby-card"><div class="hobby-icon">🏃</div><div class="hobby-title">运动健身</div><div class="hobby-desc">保持健康和活力</div><span class="card-tag">💪 健身爱好者</span></div>
             <div class="hobby-card"><div class="hobby-icon">🎵</div><div class="hobby-title">听歌唱歌</div><div class="hobby-desc">喜欢《我不难过》、《你瞒我瞒》、《我的宣言》、《抛物线》、《续集》等歌曲</div><span class="card-tag">🎤 音乐爱好者</span></div>
             <div class="hobby-card"><div class="hobby-icon">🍳</div><div class="hobby-title">制作美食</div><div class="hobby-desc">在厨房创造美味，从家常菜到创意料理</div><span class="card-tag">🍳 生活美学</span></div>
+            <div class="hobby-card"><div class="hobby-icon">📷</div><div class="hobby-title">摄影</div><div class="hobby-desc">捕捉精彩瞬间，定格美好时光</div><span class="card-tag">📷 摄影爱好者</span></div>
         </div>
     </section>
     <section id="art" class="section fade-in">
