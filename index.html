@@ -82,7 +82,7 @@
         @media (max-width: 768px) { nav { padding: 15px 20px; } nav ul { gap: 14px; } .hero { flex-direction: column; text-align: center; padding: 100px 20px 40px; gap: 30px; } .hero-image { max-width: 280px; } .hero-info h1 { font-size: 2.5rem; } .hero-info .tagline { font-size: 1rem; } .section { padding: 60px 20px; } .section-title { font-size: 1.8rem; } .cards { grid-template-columns: 1fr; } .hero-info .btn-group { justify-content: center; } }
         .game-scroll-container { overflow: hidden; background: rgba(255,255,255,0.15); border-radius: 12px; padding: 20px; margin-bottom: 30px; position: relative; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); }
         .game-scroll-track { display: flex; align-items: center; white-space: nowrap; animation: scrollLeft 25s linear infinite; }
-        .game-scroll-item { display: inline-block; margin: 0 30px; font-size: 1.8rem; font-weight: 900; color: #ff6b6b; text-shadow: 2px 2px 4px rgba(0,0,0,0.2; padding: 10px 20px; background: rgba(255,255,255,0.15); border-radius: 12px; border: 2px solid rgba(255,255,255,0.3); transition: all 0.3s; }
+        .game-scroll-item { display: inline-block; margin: 0 30px; font-size: 1.8rem; font-weight: 900; color: #ff6b6b; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); padding: 10px 20px; background: rgba(255,255,255,0.15); border-radius: 12px; border: 2px solid rgba(255,255,255,0.3); transition: all 0.3s; }
         .game-scroll-item:hover { transform: scale(1.15); background: rgba(255,255,255,0.3); border-color: #ff6b6b; color: #fff; text-shadow: 0 0 10px rgba(255,107,107,0.5); z-index: 10; box-shadow: 0 5px 20px rgba(255,107,107,0.3); }
         @keyframes scrollLeft { 0% { transform: translateX(100%); } 100% { transform: translateX(calc(-100% - 200vw)); } }
     </style>
@@ -103,17 +103,18 @@
 
     <!-- 音乐控制栏 -->
     <div class="music-control">
-        <button id="playBtn" title="播放/暂停">▶️</button>
+        <button id="playBtn" title="点击播放音乐">▶️ 点击播放</button>
         <div class="music-info">Tomatoes</div>
         <div class="music-volume">
             <span>🔊</span>
             <input type="range" id="volumeSlider" min="0" max="100" value="50">
             <span id="volumeDisplay">50%</span>
         </div>
+        <div style="font-size: 0.8rem; color: #999; margin-left: 8px;">💡 点击 ▶️ 开始播放</div>
     </div>
 
     <audio id="bgMusic" preload="auto">
-        <source src="7月27（1）.mp3" type="audio/mpeg">
+        <source src="background.mp3" type="audio/mpeg">
         您的浏览器不支持音频播放。
     </audio>
 
@@ -258,11 +259,15 @@
         
         playBtn.addEventListener('click', function() {
             if (bgMusic.paused) {
-                bgMusic.play();
-                playBtn.textContent = '⏸️';
+                bgMusic.play().then(() => {
+                    playBtn.textContent = '⏸️ 暂停';
+                }).catch(e => {
+                    console.log('播放失败:', e);
+                    playBtn.textContent = '▶️ 播放失败';
+                });
             } else {
                 bgMusic.pause();
-                playBtn.textContent = '▶️';
+                playBtn.textContent = '▶️ 继续播放';
             }
         });
         
@@ -273,6 +278,18 @@
         });
         
         bgMusic.load();
+        
+        // 监听音频加载错误
+        bgMusic.addEventListener('error', function(e) {
+            console.log('音频加载错误:', e);
+            playBtn.textContent = '❌ 音频错误';
+            playBtn.title = '音频文件可能找不到或格式不正确';
+        });
+        
+        // 监听音频加载完成
+        bgMusic.addEventListener('canplaythrough', function() {
+            console.log('音频可以播放了');
+        });
     </script>
 </body>
 </html>
