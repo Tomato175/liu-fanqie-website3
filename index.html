@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -36,6 +36,12 @@
         .hero-info .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(255,107,107,0.4); }
         .hero-info .btn-outline { background: rgba(255,255,255,0.8); color: #333; border: 2px solid rgba(255,255,255,0.3); }
         .hero-info .btn-outline:hover { background: #ff6b6b; color: #fff; border-color: #ff6b6b; transform: translateY(-3px); }
+        .music-control { position: fixed; bottom: 20px; right: 20px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 50px; padding: 12px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 15px; z-index: 1000; }
+        .music-control button { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #333; transition: transform 0.2s; }
+        .music-control button:hover { transform: scale(1.2); }
+        .music-volume { display: flex; align-items: center; gap: 8px; }
+        .music-volume input[type=range] { width: 100px; }
+        .music-info { font-size: 0.9rem; color: #555; white-space: nowrap; }
         .section { padding: 100px 60px; position: relative; }
         .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 16px; color: #333; background: linear-gradient(135deg, #ff6b6b, #ffa07a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
         .section-sub { text-align: center; color: #666; margin-bottom: 60px; font-size: 1.1rem; }
@@ -76,7 +82,7 @@
         @media (max-width: 768px) { nav { padding: 15px 20px; } nav ul { gap: 14px; } .hero { flex-direction: column; text-align: center; padding: 100px 20px 40px; gap: 30px; } .hero-image { max-width: 280px; } .hero-info h1 { font-size: 2.5rem; } .hero-info .tagline { font-size: 1rem; } .section { padding: 60px 20px; } .section-title { font-size: 1.8rem; } .cards { grid-template-columns: 1fr; } .hero-info .btn-group { justify-content: center; } }
         .game-scroll-container { overflow: hidden; background: rgba(255,255,255,0.15); border-radius: 12px; padding: 20px; margin-bottom: 30px; position: relative; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); }
         .game-scroll-track { display: flex; align-items: center; white-space: nowrap; animation: scrollLeft 25s linear infinite; }
-        .game-scroll-item { display: inline-block; margin: 0 30px; font-size: 1.8rem; font-weight: 900; color: #ff6b6b; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); padding: 10px 20px; background: rgba(255,255,255,0.15); border-radius: 12px; border: 2px solid rgba(255,255,255,0.3); transition: all 0.3s; }
+        .game-scroll-item { display: inline-block; margin: 0 30px; font-size: 1.8rem; font-weight: 900; color: #ff6b6b; text-shadow: 2px 2px 4px rgba(0,0,0,0.2; padding: 10px 20px; background: rgba(255,255,255,0.15); border-radius: 12px; border: 2px solid rgba(255,255,255,0.3); transition: all 0.3s; }
         .game-scroll-item:hover { transform: scale(1.15); background: rgba(255,255,255,0.3); border-color: #ff6b6b; color: #fff; text-shadow: 0 0 10px rgba(255,107,107,0.5); z-index: 10; box-shadow: 0 5px 20px rgba(255,107,107,0.3); }
         @keyframes scrollLeft { 0% { transform: translateX(100%); } 100% { transform: translateX(calc(-100% - 200vw)); } }
     </style>
@@ -95,6 +101,22 @@
         </ul>
     </nav>
 
+    <!-- 音乐控制栏 -->
+    <div class="music-control">
+        <button id="playBtn" title="播放/暂停">▶️</button>
+        <div class="music-info">周杰伦 - 兰亭序</div>
+        <div class="music-volume">
+            <span>🔊</span>
+            <input type="range" id="volumeSlider" min="0" max="100" value="50">
+            <span id="volumeDisplay">50%</span>
+        </div>
+    </div>
+
+    <audio id="bgMusic" preload="auto">
+        <source src="https://music.163.com/song/media/outer/url?id=500921860.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+
     <section class="hero">
         <div class="hero-image">
             <img src="C:/Users/Administrator/AppData/Local/Temp/codex-clipboard-73195934-a618-4d9f-8a79-4a691b907fb2.jpg" alt="刘番茄的个人照片">
@@ -102,11 +124,10 @@
         <div class="hero-info">
             <p class="greeting">👋 HELLO WORLD</p>
             <h1>刘番茄</h1>
-            <p class="tagline">硬核射击玩家 · 深度影迷 · 音乐爱好者 · AIGC创作者<br>在虚拟战场征战，在光影中感受故事，用音乐表达情感，用AI描绘未来</p>
+            <p class="tagline">硬核射击玩家 · 深度影迷 · AIGC创作者<br>在虚拟战场征战，在光影中感受故事，用AI描绘未来</p>
             <div class="tags">
                 <span class="tag">APEX英雄</span>
                 <span class="tag">三角洲行动</span>
-                <span class="tag">CS2</span>
                 <span class="tag">电影</span>
                 <span class="tag">韩剧</span>
                 <span class="tag">篮球</span>
@@ -139,38 +160,34 @@
 
     <section id="games" class="section game-section fade-in">
         <h2 class="section-title">游戏专区</h2>
-        <p class="section-sub">我的主战场 —— 沉浸式游戏体验</p>
+        <p class="section-sub">精选我的最爱游戏</p>
         <div class="game-scroll-container"><div class="game-scroll-track">
-            <div class="game-scroll-item">APEX英雄</div>
             <div class="game-scroll-item">三角洲行动</div>
-            <div class="game-scroll-item">CS2</div>
-            <div class="game-scroll-item">无畏契约</div>
-            <div class="game-scroll-item">使命召唤手游</div>
-            <div class="game-scroll-item">绝地求生</div>
-            <div class="game-scroll-item">守望先锋2</div>
-            <div class="game-scroll-item">原神</div>
-            <div class="game-scroll-item">永劫无间</div>
-            <div class="game-scroll-item">逆战</div>
-            <div class="game-scroll-item">暗区突围</div>
-            <div class="game-scroll-item">逃离塔科夫</div>
-            <div class="game-scroll-item">APEX英雄</div>
+            <div class="game-scroll-item">王者荣耀</div>
+            <div class="game-scroll-item">金铲铲</div>
+            <div class="game-scroll-item">英雄联盟</div>
+            <div class="game-scroll-item">APEX</div>
+            <div class="game-scroll-item">瓦洛兰特</div>
+            <div class="game-scroll-item">穿越火线</div>
+            <div class="game-scroll-item">Steam 3A</div>
             <div class="game-scroll-item">三角洲行动</div>
-            <div class="game-scroll-item">CS2</div>
-            <div class="game-scroll-item">无畏契约</div>
+            <div class="game-scroll-item">王者荣耀</div>
+            <div class="game-scroll-item">金铲铲</div>
+            <div class="game-scroll-item">英雄联盟</div>
+            <div class="game-scroll-item">APEX</div>
+            <div class="game-scroll-item">瓦洛兰特</div>
+            <div class="game-scroll-item">穿越火线</div>
+            <div class="game-scroll-item">Steam 3A</div>
         </div></div>
         <div class="cards">
-            <div class="card game-card"><div class="icon">🔫</div><h3>APEX 英雄</h3><p>快节奏战术射击。熟练掌握地图机制、角色技能搭配与团队协同，追求排名巅峰与高光时刻。</p><span class="card-tag badge-pro">⭐ 主要游戏</span></div>
-            <div class="card game-card"><div class="icon">⚔️</div><h3>三角洲行动</h3><p>拟真军事战术。注重团队配合与战术规划，在紧张的对战中体验真实的军事行动氛围。</p><span class="card-tag badge-pro">⭐ 主要游戏</span></div>
-            <div class="card game-card"><div class="icon">💣</div><h3>CS2</h3><p>经典竞技射击。精准的枪法对抗与战术博弈，在每一局中追求极致的反应与判断。</p><span class="card-tag badge-high">🔥 高玩</span></div>
-            <div class="card game-card"><div class="icon">🎯</div><h3>无畏契约（Valorant）</h3><p>技能 + 枪法的双重考验。独特角色技能组合配合精准枪法，征服每一张地图。</p><span class="card-tag badge-high">🔥 高玩</span></div>
-            <div class="card game-card"><div class="icon">🪖</div><h3>使命召唤手游</h3><p>移动端 FPS 精品。随时随地体验经典 COD 手感，快速匹配，爽快感十足。</p><span class="card-tag badge-main">🎮 休闲</span></div>
-            <div class="card game-card"><div class="icon">🏝️</div><h3>绝地求生 PUBG</h3><p>大逃杀鼻祖。百人跳伞，物资搜集，最后 Survive 的刺激体验永远难忘。</p><span class="card-tag badge-main">🎮 休闲</span></div>
-            <div class="card game-card"><div class="icon">🚀</div><h3>守望先锋 2</h3><p>团队英雄的极致配合。不同英雄切换，找到最适合的队伍角色，打出完美团战。</p><span class="card-tag badge-high">🔥 高玩</span></div>
-            <div class="card game-card"><div class="icon">🌍</div><h3>原神</h3><p>开放世界 RPG 的休闲时光。探索提瓦特大陆，收集角色，感受精彩剧情与精美画面。</p><span class="card-tag badge-main">🎮 休闲</span></div>
-            <div class="card game-card"><div class="icon">💥</div><h3>永劫无间</h3><p>东方武侠吃鸡。冷兵器对抗的酣畅淋漓，振刀博弈与空中对决的独特体验。</p><span class="card-tag badge-high">🔥 高玩</span></div>
-            <div class="card game-card"><div class="icon">🛡️</div><h3>逆战</h3><p>经典国产网游。PVE 模式下的合作冒险，PVP 模式中的热血对抗。</p><span class="card-tag badge-main">🎮 怀旧</span></div>
-            <div class="card game-card"><div class="icon">🔥</div><h3>暗区突围</h3><p>硬核撤离类射击。搜刮、生存、撤离，每一步都充满紧张感与策略性。</p><span class="card-tag badge-high">🔥 高玩</span></div>
-            <div class="card game-card"><div class="icon">🌌</div><h3>逃离塔科夫</h3><p>拟真射击天花板。极高难度带来的强烈成就感，每一次出队都是赌上全部的行动。</p><span class="card-tag badge-pro">⭐ 主要游戏</span></div>
+            <div class="card game-card"><div class="icon">⚔️</div><h3>三角洲行动</h3><p>拟真军事战术。注重团队配合与战术规划，在紧张的对战中体验真实的军事行动氛围。</p><span class="card-tag badge-pro">⭐ 核心游戏</span></div>
+            <div class="card game-card"><div class="icon">🎮</div><h3>王者荣耀</h3><p>MOBA手游王者。召唤师峡谷的即时策略对抗，和好友一起并肩作战。</p><span class="card-tag badge-main">休闲竞技</span></div>
+            <div class="card game-card"><div class="icon">🎲</div><h3>金铲铲之战</h3><p>自走棋策略游戏。阵容搭配、运营思维，用智慧赢得胜利。</p><span class="card-tag badge-main">策略游戏</span></div>
+            <div class="card game-card"><div class="icon">🏆</div><h3>英雄联盟 (LOL)</h3><p>全球顶尖MOBA电竞。召唤师峡谷的经典竞技，团队协作与个人操作的极致考验。</p><span class="card-badge badge-high">高玩</span></div>
+            <div class="card game-card"><div class="icon">🔫</div><h3>APEX 英雄</h3><p>快节奏战术射击。熟练掌握地图机制、角色技能搭配与团队协同，追求排名巅峰。</p><span class="card-tag badge-pro">⭐ 核心游戏</span></div>
+            <div class="card game-card"><div class="icon">🎯</div><h3>瓦洛兰特 (Valorant)</h3><p>技能 + 枪法的完美融合。独特角色能力配合精准枪法，每张地图都是策略博弈。</p><span class="card-tag badge-high">高玩</span></div>
+            <div class="card game-card"><div class="icon">🔫</div><h3>穿越火线 (CF)</h3><p>经典FPS穿越火线。枪战竞技的鼻祖之一，无数玩家的青春回忆。</p><span class="card-badge badge-main">情怀之作</span></div>
+            <div class="card game-card"><div class="icon">🎮</div><h3>Steam 3A大作</h3><p>包含荒野大镖客2、巫师3、艾尔登法环、赛博朋克2077等顶级单机游戏，沉浸式剧情体验。</p><span class="card-tag badge-pro">⭐ 核心游戏</span></div>
         </div>
     </section>
 
@@ -232,6 +249,31 @@
         window.addEventListener('scroll',handleScroll);
         window.addEventListener('load',handleScroll);
         document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})}));
+        
+        // 音乐控制
+        const bgMusic = document.getElementById('bgMusic');
+        const playBtn = document.getElementById('playBtn');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeDisplay = document.getElementById('volumeDisplay');
+        
+        playBtn.addEventListener('click', function() {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                playBtn.textContent = '⏸️';
+            } else {
+                bgMusic.pause();
+                playBtn.textContent = '▶️';
+            }
+        });
+        
+        volumeSlider.addEventListener('input', function() {
+            const volume = this.value;
+            bgMusic.volume = volume / 100;
+            volumeDisplay.textContent = volume + '%';
+        });
+        
+        // 加载音乐
+        bgMusic.load();
     </script>
 </body>
 </html>
