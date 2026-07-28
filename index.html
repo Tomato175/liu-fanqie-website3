@@ -14,7 +14,7 @@
         nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 60px; position: fixed; top: 0; width: 100%; z-index: 100; background: rgba(255,255,255,0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(0,0,0,0.05); }
         nav .logo { font-size: 1.6rem; font-weight: 900; background: linear-gradient(135deg, #ff6b6b, #ffa07a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px; }
         nav ul { list-style: none; display: flex; gap: 32px; }
-        nav a { color: #555; text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s, transform 0.3s; position: relative; }
+        nav a { color: #555; text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.3s, transform 0.3s; position: relative; cursor: pointer; }
         nav a:hover { color: #ff6b6b; transform: translateY(-2px); }
         nav a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: #ff6b6b; transition: width 0.3s; }
         nav a:hover::after { width: 100%; }
@@ -31,7 +31,7 @@
         .hero-info .tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; }
         .hero-info .tag { padding: 8px 18px; border-radius: 20px; font-size: 0.85rem; background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.3); color: #333; cursor: default; transition: all 0.3s; }
         .hero-info .tag:hover { background: #ff6b6b; color: #fff; border-color: #ff6b6b; transform: scale(1.05); }
-        .section { padding: 80px 60px; }
+        .section { padding: 80px 60px; min-height: 80vh; }
         .section-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; color: #333; text-align: center; }
         .section-sub { text-align: center; color: #666; margin-bottom: 40px; font-size: 1.1rem; }
         .games-container { overflow-x: auto; white-space: nowrap; padding: 20px 0; margin: 0 auto; max-width: 1200px; }
@@ -64,34 +64,73 @@
         .contact-card .label { color: #666; font-size: 0.9rem; }
         .social-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
         footer { text-align: center; padding: 30px; background: rgba(255,255,255,0.1); color: #666; font-size: 0.9rem; }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .loading-overlay.active { opacity: 1; pointer-events: all; }
+        .loading-spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #ff6b6b; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { font-size: 1.5rem; color: #ff6b6b; font-weight: 600; }
+        .empty-state { text-align: center; padding: 60px 20px; background: rgba(255,255,255,0.8); border-radius: 20px; max-width: 600px; margin: 40px auto; }
+        .emoji { font-size: 4rem; margin-bottom: 20px; display: block; }
+        .empty-title { font-size: 1.8rem; color: #333; margin-bottom: 15px; font-weight: 700; }
+        .empty-desc { color: #666; font-size: 1.1rem; line-height: 1.6; }
+        .progress-bar { width: 100%; height: 4px; background: #eee; border-radius: 2px; overflow: hidden; margin-top: 20px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #ff6b6b, #ffa07a); width: 0%; transition: width 0.3s; }
     </style>
 </head>
 <body>
+    <!-- 粒子背景 -->
     <div class="bg-particles" id="bgParticles"></div>
+
+    <!-- 导航 -->
     <nav>
         <div class="logo">🍅 刘番茄</div>
         <ul>
-            <li><a href="#home">主页</a></li>
-            <li><a href="#games">游戏</a></li>
-            <li><a href="#hobbies">爱好</a></li>
-            <li><a href="#art">创作</a></li>
-            <li><a href="#contact">联系</a></li>
+            <li><a href="#home" onclick="showLoading('首页')">主页</a></li>
+            <li><a href="#games" onclick="showLoading('游戏专区')">游戏</a></li>
+            <li><a href="#hobbies" onclick="showLoading('兴趣爱好')">爱好</a></li>
+            <li><a href="#art" onclick="showLoading(AI创作)">创作</a></li>
+            <li><a href="#contact" onclick="showLoading(联系我)">联系</a></li>
         </ul>
     </nav>
+
+    <!-- 加载遮罩层 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingText">番茄正在努力加载中...</div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <!-- 英雄区 -->
     <section id="home" class="hero fade-in">
         <div class="hero-image"><img src="avatar.png" alt="刘番茄"></div>
         <div class="hero-info">
             <div class="greeting">你好，我是</div>
             <h1>刘番茄</h1>
             <div class="motto">人生的容错率大到你无法想象。不要因为一次的错误反复责怪自己，不要因为一个不理想的结果就停滞不前。-----Tomato！</div>
-            <div class="tagline">APEX 高手 · 三角洲行动玩家 · 电影爱好者</div>
-            <div class="tags"><span class="tag">APEX</span><span class="tag">三角洲行动</span><span class="tag">电影</span><span class="tag">唱歌</span><span class="tag">AIGC</span><span class="tag">编程</span></div>
-            <div class="btn-group"><a href="#games" class="btn btn-primary">查看游戏</a><a href="#contact" class="btn btn-outline">联系我</a></div>
+            <div class="tagline">APEX 高手 · 三角洲行动玩家 · 电影爱好者 · AIGC 探索者</div>
+            <div class="tags">
+                <span class="tag">🔫 APEX</span>
+                <span class="tag">💣 三角洲</span>
+                <span class="tag">🎬 电影</span>
+                <span class="tag">🎵 音乐</span>
+                <span class="tag">🤖 AIGC</span>
+                <span class="tag">💻 编程</span>
+                <span class="tag">📷 摄影</span>
+                <span class="tag">🏀 篮球</span>
+            </div>
+            <div class="btn-group">
+                <a href="#games" class="btn btn-primary" onclick="event.preventDefault(); showLoading('游戏专区'); scrollToSection('games')">查看游戏</a>
+                <a href="#contact" class="btn btn-outline" onclick="event.preventDefault(); showLoading('联系我'); scrollToSection('contact')">联系我</a>
+            </div>
         </div>
     </section>
-    <section id="games" class="section fade-in" style="background: rgba(255,255,255,0.2);">
-        <h2 class="section-title">🎮 游戏</h2>
+
+    <!-- 游戏区（带懒加载状态） -->
+    <section id="games" class="section fade-in" style="background: rgba(255,255,255,0.2);" onscroll="checkSectionVisibility()">
+        <h2 class="section-title">🎮 游戏专区</h2>
         <p class="section-sub">我最爱玩的射击和竞技游戏</p>
+        
+        <!-- 游戏卡片网格 -->
         <div class="games-container">
             <div class="games-grid">
                 <div class="game-card"><div class="game-icon">🔫</div><div class="game-name">APEX 英雄</div><div class="game-desc">战术射击，团队配合，极速枪战体验，化身传奇杀手</div></div>
@@ -104,9 +143,21 @@
                 <div class="game-card"><div class="game-icon">🎮</div><div class="game-name">Steam 3A大作</div><div class="game-desc">单机盛宴，开放世界，沉浸式剧情体验</div></div>
             </div>
         </div>
+
+        <!-- 未来计划提示 -->
+        <div style="text-align: center; margin-top: 40px;">
+            <div class="empty-state">
+                <span class="emoji">🎮</span>
+                <div class="empty-title">更多游戏内容敬请期待！</div>
+                <div class="empty-desc">番茄正在完善更多游戏攻略、高光时刻分享。<br>敬请期待下一版本更新！</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 35%;"></div></div>
+            </div>
+        </div>
     </section>
-    <section id="hobbies" class="section fade-in" style="background: rgba(255,255,255,0.2);">
-        <h2 class="section-title">❤️ 爱好</h2>
+
+    <!-- 爱好区 -->
+    <section id="hobbies" class="section fade-in" style="background: rgba(255,255,255,0.2);" onscroll="checkSectionVisibility()">
+        <h2 class="section-title">❤️ 我的爱好</h2>
         <p class="section-sub">我喜欢做的事情</p>
         <div class="hobbies-grid">
             <div class="hobby-card"><div class="hobby-icon">🎬</div><div class="hobby-title">看电影</div><div class="hobby-desc">享受光影带来的故事和情感体验</div><span class="card-tag">🎬 电影爱好者</span></div>
@@ -117,19 +168,43 @@
             <div class="hobby-card"><div class="hobby-icon">🍳</div><div class="hobby-title">制作美食</div><div class="hobby-desc">在厨房创造美味，从家常菜到创意料理</div><span class="card-tag">🍳 生活美学</span></div>
             <div class="hobby-card"><div class="hobby-icon">📷</div><div class="hobby-title">摄影</div><div class="hobby-desc">捕捉精彩瞬间，定格美好时光</div><span class="card-tag">📷 摄影爱好者</span></div>
         </div>
-    </section>
-    <section id="art" class="section fade-in">
-        <h2 class="section-title">🎨 创作</h2>
-        <p class="section-sub">在 AIGC、编程和 AI 领域颇有造诣</p>
-        <div class="hobbies-grid">
-            <div class="hobby-card"><div class="hobby-icon">🤖</div><div class="hobby-title">AIGC 创作</div><div class="hobby-desc">利用人工智能生成创意内容</div><span class="card-tag">🚀 技术驱动</span></div>
-            <div class="hobby-card"><div class="hobby-icon">💻</div><div class="hobby-title">编程开发</div><div class="hobby-desc">用代码创造各种应用和工具</div><span class="card-tag">💻 程序员</span></div>
-            <div class="hobby-card"><div class="hobby-icon">🤖</div><div class="hobby-title">AI 技术应用</div><div class="hobby-desc">探索人工智能的各种应用场景</div><span class="card-tag">🧠 AI 专家</span></div>
-            <div class="hobby-card"><div class="hobby-icon">🎨</div><div class="hobby-title">图片制作</div><div class="hobby-desc">创作各种视觉艺术作品</div><span class="card-tag">🎨 设计师</span></div>
+
+        <!-- 摄影专区提示 -->
+        <div style="text-align: center; margin-top: 40px;">
+            <div class="empty-state">
+                <span class="emoji">📷</span>
+                <div class="empty-title">摄影作品集建设中...</div>
+                <div class="empty-desc">番茄正在整理自己的摄影作品库。<br>敬请期待精美大片！</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 50%;"></div></div>
+            </div>
         </div>
     </section>
-    <section id="gallery" class="section fade-in" style="background:rgba(255,255,255,0.3);">
-        <h2 class="section-title">作品展示</h2>
+
+    <!-- 创作区 -->
+    <section id="art" class="section fade-in" onscroll="checkSectionVisibility()">
+        <h2 class="section-title">🎨 创作天地</h2>
+        <p class="section-sub">在 AIGC、编程和 AI 领域颇有造诣</p>
+        <div class="hobbies-grid">
+            <div class="hobby-card"><div class="hobby-icon">🤖</div><div class="hobby-title">AIGC 创作</div><div class="hobby-desc">利用人工智能生成创意内容，探索无限可能</div><span class="card-tag">🚀 技术驱动</span></div>
+            <div class="hobby-card"><div class="hobby-icon">💻</div><div class="hobby-title">编程开发</div><div class="hobby-desc">用代码创造各种应用和工具，解决实际问题</div><span class="card-tag">💻 程序员</span></div>
+            <div class="hobby-card"><div class="hobby-icon">🤖</div><div class="hobby-title">AI 技术应用</div><div class="hobby-desc">探索人工智能的各种应用场景，推动技术发展</div><span class="card-tag">🧠 AI 专家</span></div>
+            <div class="hobby-card"><div class="hobby-icon">🎨</div><div class="hobby-title">图片制作</div><div class="hobby-desc">创作各种视觉艺术作品，用色彩表达想法</div><span class="card-tag">🎨 设计师</span></div>
+        </div>
+
+        <!-- 创作进度提示 -->
+        <div style="text-align: center; margin-top: 40px;">
+            <div class="empty-state">
+                <span class="emoji">💡</span>
+                <div class="empty-title">创作内容持续更新中</div>
+                <div class="empty-desc">番茄正在编写更多教程、分享技术心得。<br>敬请关注我的创作进展！</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 作品展示区 -->
+    <section id="gallery" class="section fade-in" style="background:rgba(255,255,255,0.3);" onscroll="checkSectionVisibility()">
+        <h2 class="section-title">🖼️ 作品展示</h2>
         <p class="section-sub">我的图片创作与AIGC设计作品集</p>
         <div class="gallery">
             <div class="gallery-item" title="AIGC生成">🤖</div>
@@ -143,22 +218,43 @@
         </div>
         <p style="text-align:center;color:#666;margin-top:30px;font-size:0.95rem;">更多作品持续更新中... AIGC创作领域持续探索</p>
     </section>
-    <section id="contact" class="section contact fade-in">
-        <h2 class="section-title">联系我</h2>
+
+    <!-- 联系区 -->
+    <section id="contact" class="section contact fade-in" onscroll="checkSectionVisibility()">
+        <h2 class="section-title">📞 联系我</h2>
         <p class="section-sub" style="margin-bottom:20px; font-size: 1.1rem;">想一起组队游戏、聊电影、约KTV或探讨技术？随时找我！</p>
         <div class="social-links">
             <div class="contact-card"><span class="icon">💬</span><div class="detail">2517055317</div><div class="label">QQ 号码</div></div>
             <div class="contact-card"><span class="icon">📱</span><div class="detail">17825315998</div><div class="label">微信 号码</div></div>
         </div>
+
+        <!-- 社交动态提示 -->
+        <div style="text-align: center; margin-top: 40px;">
+            <div class="empty-state">
+                <span class="emoji">✨</span>
+                <div class="empty-title">社交动态更新中</div>
+                <div class="empty-desc">番茄正准备添加更多社交平台和个人博客链接。<br>敬请期待完整联系方式！</div>
+                <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+            </div>
+        </div>
     </section>
+
+    <!-- 音乐控制 -->
     <div class="music-control">
         <button id="playBtn" title="播放/暂停">▶️</button>
         <label>音量: <input type="range" id="volumeSlider" min="0" max="100" value="50"></label>
         <span id="volumeDisplay">50%</span>
     </div>
+
+    <!-- 隐藏的音频元素 -->
     <audio id="bgMusic" src="music.mp3" preload="auto"></audio>
-    <footer><p>&copy; 2026 刘番茄的个人主页. Made with ❤️ | AIGC & 游戏爱好者</p></footer>
+
+    <footer>
+        <p>&copy; 2026 刘番茄的个人主页. Made with ❤️ | AIGC & 游戏爱好者</p>
+    </footer>
+
     <script>
+        // 粒子动画
         const particlesContainer = document.getElementById('bgParticles');
         const colors = ['#e0f7fa', '#b2ebf2', '#80deea', '#4dd0e1', '#26c6da'];
         for(let i=0;i<40;i++){
@@ -167,9 +263,64 @@
             const duration=Math.random()*20+15,xDir=(Math.random()-0.5)*200;
             p.style.width=size+'px';p.style.height=size+'px';p.style.background=color;p.style.left=Math.random()*100+'%';p.style.setProperty('--dx',xDir+'px');p.style.animationDuration=duration+'s';p.style.animationDelay=(Math.random()*10)+'s';particlesContainer.appendChild(p);
         }
-        function handleScroll(){ document.querySelectorAll('.fade-in').forEach(e=>{const r=e.getBoundingClientRect();if(r.top<window.innerHeight-100)e.classList.add('visible')}); }
-        window.addEventListener('scroll',handleScroll); window.addEventListener('load',handleScroll);
+
+        // 平滑滚动和加载提示
+        function showLoading(sectionName) {
+            const overlay = document.getElementById('loadingOverlay');
+            const text = document.getElementById('loadingText');
+            const progress = document.getElementById('progressFill');
+            
+            text.textContent = `${sectionName} - 番茄正在努力加载中...`;
+            overlay.classList.add('active');
+            
+            // 模拟加载进度
+            let width = 0;
+            const interval = setInterval(() => {
+                if(width >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        overlay.classList.remove('active');
+                    }, 300);
+                } else {
+                    width += Math.random() * 10;
+                    progress.style.width = width + '%';
+                }
+            }, 200);
+        }
+
+        function scrollToSection(sectionId) {
+            showLoading(sectionId.charAt(0) + sectionId.substring(1));
+            setTimeout(() => {
+                const element = document.getElementById(sectionId);
+                if(element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 800);
+        }
+
+        // 页面加载淡入效果
+        function handleScroll(){
+            document.querySelectorAll('.fade-in').forEach(e=>{const r=e.getBoundingClientRect();if(r.top<window.innerHeight-100)e.classList.add('visible')});
+        }
+        
+        window.addEventListener('scroll',handleScroll);
+        window.addEventListener('load',handleScroll);
+
+        // 检查区域可见度，添加开发中提示（可选）
+        function checkSectionVisibility() {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if(rect.top < window.innerHeight && rect.bottom > 0) {
+                    // 区域可见
+                }
+            });
+        }
+
+        // 传统锚点链接处理
         document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth'})}));
+
+        // 音乐控制
         const bgMusic = document.getElementById('bgMusic'), playBtn = document.getElementById('playBtn'), volumeSlider = document.getElementById('volumeSlider'), volumeDisplay = document.getElementById('volumeDisplay');
         playBtn.addEventListener('click', function() { if (bgMusic.paused) { bgMusic.play().then(() => { playBtn.textContent = '⏸️'; }).catch(e => { console.log('播放失败:', e); playBtn.textContent = '❌'; playBtn.title = '音乐文件可能未找到或格式不正确'; }); } else { bgMusic.pause(); playBtn.textContent = '▶️'; } });
         volumeSlider.addEventListener('input', function() { const volume = this.value; bgMusic.volume = volume / 100; volumeDisplay.textContent = volume + '%'; });
